@@ -3,20 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome Page</title>
+  <title>Team Mitesh Lodha Invite</title>
   <style>
-    body { 
-      font-family: Arial, sans-serif; 
-      text-align: center; 
-      padding-top: 50px; 
+    body {
       margin: 0;
-      background-color: #013220; /* Dark rich green background */
-      color: #FFD700;           /* Golden default text */
+      font-family: Arial, sans-serif;
+      background-color: #013220; /* Dark rich green */
+      color: #FFD700; /* Golden text */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      overflow: hidden;
     }
-
-    #form-container, #video-container, #welcome-message { display: none; }
-
-    #thankyou-message {
+    #form-container, #welcome-message, #video-container, #thankyou-message {
       display: none;
       margin: 20px auto;
       max-width: 600px;
@@ -30,128 +31,63 @@
       line-height: 1.4;
       box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     }
-
-    /* Responsive video container */
-    #video-container {
-      display: none;
-      max-width: 600px;
-      width: 90%;
-      margin: 20px auto;
+    #form-container {
+      display: block; /* Show form first */
     }
-    #welcome-video {
+    video {
       width: 100%;
       height: auto;
-      border-radius: 10px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    }
-
-    /* Welcome message styling */
-    #welcome-message {
-      display: none;
-      padding: 20px;
-      margin: 20px auto;
-      max-width: 600px;
-      width: 90%;
-      font-size: clamp(16px, 4vw, 24px);
-      line-height: 1.4;
       border-radius: 12px;
-      background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent dark overlay */
-      color: #FFD700; /* Golden text */
-      font-size: 24px;
-      font-weight: bold;
       box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     }
-
-    #thankyou-message {
-      display: none;
-      margin: 20px auto;
-      max-width: 600px;
-      width: 90%;
-      padding: 20px;
-      border-radius: 12px;
-      background-color: rgba(0, 0, 0, 0.6);
-      color: #FFD700;
-      font-size: clamp(16px, 4vw, 24px);
-      font-weight: bold;
-      line-height: 1.4;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    }
-
-    /* Fade animations */
     .fade-in {
       animation: fadeIn 1s forwards;
     }
-    .fade-out { animation: fadeOut 0.7s forwards; /* Smooth 0.7s fade-out */ }
-
+    .fade-out {
+      animation: fadeOut 0.7s forwards;
+    }
     #video-container.fade-in {
-      animation: fadeIn 1s forwards; /* Smooth 1s fade-in for video */
+      animation: fadeIn 1s forwards; /* Smooth fade-in for video */
     }
-    }
-
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
     }
-
     @keyframes fadeOut {
       from { opacity: 1; }
       to { opacity: 0; }
     }
-
-    /* Mobile-friendly input fields */
-    input, button {
-      width: 80%;
-      max-width: 300px;
-      padding: 10px;
-      margin: 5px auto;
-      border-radius: 8px;
-      border: 1px solid #FFD700;
-      font-size: 16px;
-      color: #333;
-    }
-    button {
-      background: #FFD700; /* Golden button */
-      color: #333;
-      border: none;
-      cursor: pointer;
-      transition: background 0.3s ease;
-      font-weight: bold;
-    }
-    button:hover {
-      background: #e6c200; /* Darker gold on hover */
-    }
   </style>
 </head>
 <body>
-
   <div id="form-container">
     <h2>Enter Your Details</h2>
-    <input type="text" id="name" placeholder="Your Name" required><br><br>
-    <input type="tel" id="number" placeholder="Your Phone Number" required><br><br>
-    <button onclick="submitForm()">Submit</button>
+    <form id="welcome-form" action="https://formspree.io/f/xovlbgnn" method="POST">
+      <input type="text" name="name" id="name" placeholder="Your Name" required><br><br>
+      <input type="tel" name="number" id="number" placeholder="Your Phone Number" required><br><br>
+      <button type="submit">Submit</button>
+    </form>
   </div>
 
   <div id="welcome-message">
     <h2 id="welcome-text"></h2>
   </div>
 
-  <div id="thankyou-message">
-    <h2>Thank you for joining us!</h2>
-  </div>
-
   <div id="video-container">
-    <video id="welcome-video" controls>
-      <source src="welcome_compressed.mp4" type="video/mp4"> <!-- Fixed web-friendly video -->
+    <video id="welcome-video">
+      <source src="welcome.mp4" type="video/mp4">
       Your browser does not support the video tag.
     </video>
   </div>
 
-  <script>
-    window.onload = () => {
-      document.getElementById('form-container').style.display = 'block';
-    }
+  <div id="thankyou-message">
+    <h2>Thank you for joining us!</h2>
+  </div>
 
-    function submitForm() {
+  <script>
+    document.getElementById('welcome-form').addEventListener('submit', function(e) {
+      e.preventDefault(); // stop normal refresh
+
       const name = document.getElementById('name').value;
       const number = document.getElementById('number').value;
 
@@ -160,32 +96,36 @@
         return;
       }
 
-      // Hide form
-      document.getElementById('form-container').style.display = 'none';
+      // Send data to Formspree
+      fetch(this.action, {
+        method: "POST",
+        body: new FormData(this),
+        headers: { 'Accept': 'application/json' }
+      });
 
-      // Show welcome message with fade-in
+      // Hide form & show welcome message
+      document.getElementById('form-container').style.display = 'none';
       const welcomeMessage = document.getElementById('welcome-message');
       const welcomeText = document.getElementById('welcome-text');
       welcomeText.textContent = `Team Mitesh Lodha welcomes you, ${name}!`;
       welcomeMessage.style.display = 'block';
       welcomeMessage.classList.add('fade-in');
 
-      // After 2 seconds, fade out message then fade in video
+      // After 2.3s, fade out welcome message then fade in video
       setTimeout(() => {
-  welcomeMessage.classList.remove('fade-in');
-  welcomeMessage.classList.add('fade-out');
+        welcomeMessage.classList.remove('fade-in');
+        welcomeMessage.classList.add('fade-out');
 
-  // Wait until fade-out finishes (0.7s), then hide message + show video
-  welcomeMessage.addEventListener('animationend', () => {
-    welcomeMessage.style.display = 'none';
+        welcomeMessage.addEventListener('animationend', () => {
+          welcomeMessage.style.display = 'none';
 
-    // Show video with fade-in
-    const videoContainer = document.getElementById('video-container');
-    videoContainer.style.display = 'block';
-    videoContainer.classList.add('fade-in');
+          // Show video with fade-in
+          const videoContainer = document.getElementById('video-container');
+          videoContainer.style.display = 'block';
+          videoContainer.classList.add('fade-in');
 
-    const video = document.getElementById('welcome-video');
-    video.play();
+          const video = document.getElementById('welcome-video');
+          video.play();
 
           // When video ends, show Thank You message
           video.addEventListener('ended', () => {
@@ -194,11 +134,10 @@
             thankyouMessage.style.display = 'block';
             thankyouMessage.classList.add('fade-in');
           });
-  }, { once: true });
+        }, { once: true });
 
-}, 2300); // 2.3 seconds wait before fade-out
-    }
+      }, 2300); // 2.3 seconds wait before fade-out
+    });
   </script>
-
 </body>
 </html>
