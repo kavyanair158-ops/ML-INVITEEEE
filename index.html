@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome Page</title>
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      text-align: center; 
+      padding-top: 50px; 
+      margin: 0;
+      background-color: #013220; /* Dark rich green background */
+      color: #FFD700;           /* Golden default text */
+    }
+
+    #form-container, #video-container, #welcome-message { display: none; }
+
+    #thankyou-message {
+      display: none;
+      margin: 20px auto;
+      max-width: 600px;
+      width: 90%;
+      padding: 20px;
+      border-radius: 12px;
+      background-color: rgba(0, 0, 0, 0.6);
+      color: #FFD700;
+      font-size: clamp(16px, 4vw, 24px);
+      font-weight: bold;
+      line-height: 1.4;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    /* Responsive video container */
+    #video-container {
+      display: none;
+      max-width: 600px;
+      width: 90%;
+      margin: 20px auto;
+    }
+    #welcome-video {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    /* Welcome message styling */
+    #welcome-message {
+      display: none;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 600px;
+      width: 90%;
+      font-size: clamp(16px, 4vw, 24px);
+      line-height: 1.4;
+      border-radius: 12px;
+      background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent dark overlay */
+      color: #FFD700; /* Golden text */
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    #thankyou-message {
+      display: none;
+      margin: 20px auto;
+      max-width: 600px;
+      width: 90%;
+      padding: 20px;
+      border-radius: 12px;
+      background-color: rgba(0, 0, 0, 0.6);
+      color: #FFD700;
+      font-size: clamp(16px, 4vw, 24px);
+      font-weight: bold;
+      line-height: 1.4;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    /* Fade animations */
+    .fade-in {
+      animation: fadeIn 1s forwards;
+    }
+    .fade-out { animation: fadeOut 0.7s forwards; /* Smooth 0.7s fade-out */ }
+
+    #video-container.fade-in {
+      animation: fadeIn 1s forwards; /* Smooth 1s fade-in for video */
+    }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+
+    /* Mobile-friendly input fields */
+    input, button {
+      width: 80%;
+      max-width: 300px;
+      padding: 10px;
+      margin: 5px auto;
+      border-radius: 8px;
+      border: 1px solid #FFD700;
+      font-size: 16px;
+      color: #333;
+    }
+    button {
+      background: #FFD700; /* Golden button */
+      color: #333;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #e6c200; /* Darker gold on hover */
+    }
+  </style>
+</head>
+<body>
+
+  <div id="form-container">
+    <h2>Enter Your Details</h2>
+    <input type="text" id="name" placeholder="Your Name" required><br><br>
+    <input type="tel" id="number" placeholder="Your Phone Number" required><br><br>
+    <button onclick="submitForm()">Submit</button>
+  </div>
+
+  <div id="welcome-message">
+    <h2 id="welcome-text"></h2>
+  </div>
+
+  <div id="thankyou-message">
+    <h2>Thank you for joining us!</h2>
+  </div>
+
+  <div id="video-container">
+    <video id="welcome-video" controls>
+      <source src="welcome_compressed.mp4" type="video/mp4"> <!-- Fixed web-friendly video -->
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <script>
+    window.onload = () => {
+      document.getElementById('form-container').style.display = 'block';
+    }
+
+    function submitForm() {
+      const name = document.getElementById('name').value;
+      const number = document.getElementById('number').value;
+
+      if (!name || !number) {
+        alert("Please enter both your name and number.");
+        return;
+      }
+
+      // Hide form
+      document.getElementById('form-container').style.display = 'none';
+
+      // Show welcome message with fade-in
+      const welcomeMessage = document.getElementById('welcome-message');
+      const welcomeText = document.getElementById('welcome-text');
+      welcomeText.textContent = `Team Mitesh Lodha welcomes you, ${name}!`;
+      welcomeMessage.style.display = 'block';
+      welcomeMessage.classList.add('fade-in');
+
+      // After 2 seconds, fade out message then fade in video
+      setTimeout(() => {
+  welcomeMessage.classList.remove('fade-in');
+  welcomeMessage.classList.add('fade-out');
+
+  // Wait until fade-out finishes (0.7s), then hide message + show video
+  welcomeMessage.addEventListener('animationend', () => {
+    welcomeMessage.style.display = 'none';
+
+    // Show video with fade-in
+    const videoContainer = document.getElementById('video-container');
+    videoContainer.style.display = 'block';
+    videoContainer.classList.add('fade-in');
+
+    const video = document.getElementById('welcome-video');
+    video.play();
+
+          // When video ends, show Thank You message
+          video.addEventListener('ended', () => {
+            videoContainer.style.display = 'none';
+            const thankyouMessage = document.getElementById('thankyou-message');
+            thankyouMessage.style.display = 'block';
+            thankyouMessage.classList.add('fade-in');
+          });
+  }, { once: true });
+
+}, 2300); // 2.3 seconds wait before fade-out
+    }
+  </script>
+
+</body>
+</html>
